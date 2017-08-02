@@ -1,18 +1,33 @@
 include:
   - elasticsearch.service
 
-{% from "elasticsearch/settings.sls" import elasticsearch with context %}
 
-{%- if elasticsearch.major_version == 5 %}
-{%- set jvm_opts = salt['pillar.get']('elasticsearch:jvm_opts') %}
-{%- if jvm_opts %}
 /etc/elasticsearch/jvm.options:
   file.managed:
-    - mode: 0770
-    - user: elasticsearch
+    - source: salt://elasticsearch/files/jvm.options
+    - user: root
     - group: elasticsearch
-    - contents: {{ jvm_opts }}
+    - mode: 0660
+    - template: jinja
     - watch_in:
-      - service: elasticsearch
-{% endif -%}
-{% endif -%}
+      - service: elasticsearch_service
+    - context:
+        jvm_opts: {{ salt['pillar.get']('elasticsearch:jvm_opts', '{}') }}
+
+/etc/security/limits.conf:
+  file.append:
+    - text: 
+      - "elasticsearch soft memlock unlimited"
+      - "elasticsearch hard memlock unlimited"
+
+/usr/lib/systemd/system/elasticsearch.service:
+  file.replace:
+    - name: /usr/lib/systemd/system/elasticsearch.service
+    - pattern: '#LimitMEMLOCK=infinity'
+    - repl: 'LimitMEMLOCK=infinity'
+
+elasticsearch_daemon_reload:
+  module.run:
+    - name: service.systemctl_reload
+    - onchanges:
+      - file: /usr/lib/systemd/system/elasticsearch.service
