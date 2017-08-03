@@ -22,7 +22,8 @@ cluster.name: {{ config["cluster.name"] }}
 #
 # Use a descriptive name for the node:
 #
-node.attr.name: {{ config["node.attr.name"] }}
+{%- set fqdn = grains['id'] %}
+node.attr.name: {{ fqdn }}
 #
 # Add custom attributes to the node:
 #
