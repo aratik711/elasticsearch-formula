@@ -10,7 +10,7 @@
 }) %}
 
 
-install_openjdk:
+install_openjdk_jre:
   pkg:
     - installed
     - name: {{ settings.package }}

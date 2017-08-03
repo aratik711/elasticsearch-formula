@@ -8,7 +8,7 @@ elasticsearch_service:
     - enable: True
 {%- if salt['pillar.get']('elasticsearch:config') %}
     - watch:
-      - file: elasticsearch_cfg
+      - file: /etc/elasticsearch/elasticsearch.yml
       - file: /etc/elasticsearch/jvm.options
       - file: /usr/lib/systemd/system/elasticsearch.service
 {%- endif %}

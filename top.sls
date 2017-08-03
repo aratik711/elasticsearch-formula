@@ -1,5 +1,4 @@
 base:
   '*':
-    - elasticsearch.init
-  'salt-test':
+    - openjdk.init
     - elasticsearch.init

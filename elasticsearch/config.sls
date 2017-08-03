@@ -2,13 +2,15 @@ include:
   - elasticsearch.pkg
 
 {%- if salt['pillar.get']('elasticsearch:config') %}
-elasticsearch_cfg:
-  file.serialize:
-    - name: /etc/elasticsearch/elasticsearch.yml
-    - dataset_pillar: elasticsearch:config
+/etc/elasticsearch/elasticsearch.yml:
+  file.managed:
+    - source: salt://elasticsearch/files/elasticsearch.yml
     - user: root
+    - template: jinja
     - require:
       - sls: elasticsearch.pkg
+    - context:
+        config: {{ salt['pillar.get']('elasticsearch:config', '{}') }}
 {%- endif %}
 
 {% set data_dir = salt['pillar.get']('elasticsearch:config:path.data') %}
