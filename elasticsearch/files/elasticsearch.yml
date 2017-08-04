@@ -68,7 +68,16 @@ http.port: {{ config["http.port"] }}
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-discovery.zen.ping.unicast.hosts: {{ config["discovery.zen.ping.unicast.hosts"] }}
+
+
+{% set es_hosts = [] %}
+{% for id, addr in salt.mine.get('roles:es_*', 'network.ip_addrs', expr_form='grain').iteritems() %}
+{% do es_hosts.append(addr[0]) %}
+{% endfor %}
+
+discovery.zen.ping.unicast.hosts: {{ es_hosts | yaml() }} 
+
+{# discovery.zen.ping.unicast.hosts: {{ config["discovery.zen.ping.unicast.hosts"] }} #}
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
 #
@@ -93,6 +102,16 @@ action.destructive_requires_name: {{ config["action.destructive_requires_name"] 
 
 node.attr.max_local_storage_nodes: {{ config["node.attr.max_local_storage_nodes"] }}
 
-node.master: {{ config["node.master"] }}
 
-mode.data: {{ config["node.data"] }}
+{%- if 'es_master' in grains['roles'] %}
+node.master: true
+{% else %}
+node.master: false
+{% endif %}
+
+{%- if 'es_datanode' in grains['roles'] %}
+node.data: true
+{% else %}
+node.data: false
+{% endif %}
+

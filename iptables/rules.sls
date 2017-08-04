@@ -1,10 +1,13 @@
+include:
+  - iptables.install
+
 iptables_elasticsearch_rest_api:
   iptables.insert:
-    - position: 2
+    - position: 5
     - table: filter
     - chain: INPUT
     - jump: ACCEPT
-    - match: 
+    - match:
       - state
       - tcp
       - comment
@@ -13,11 +16,12 @@ iptables_elasticsearch_rest_api:
     - dport: 9200
     - proto: tcp
     - save: True
-
+    - require:
+      - sls: iptables.install
 
 iptables_elasticsearch_node_comm:
   iptables.insert:
-    - position: 3
+    - position: 6
     - table: filter
     - chain: INPUT
     - jump: ACCEPT
@@ -30,4 +34,7 @@ iptables_elasticsearch_node_comm:
     - dport: 9300
     - proto: tcp
     - save: True
+    - require:
+      - sls: iptables.install
+
 

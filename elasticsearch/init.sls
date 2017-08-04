@@ -1,7 +1,7 @@
 include:
   - elasticsearch.repo
   - elasticsearch.pkg
-  - elasticsearch.iptables
+  - iptables.init
   - elasticsearch.config
   - elasticsearch.sysconfig
   - elasticsearch.jvmopts
