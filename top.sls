@@ -1,5 +1,5 @@
 base:
   '*':
     - openjdk.init
-    - iptables.init
+    - firewall.init
     - elasticsearch.init

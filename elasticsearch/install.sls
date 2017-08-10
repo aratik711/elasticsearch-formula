@@ -4,6 +4,7 @@ include:
 {% from "elasticsearch/map.jinja" import elasticsearch_map with context %}
 {% from "elasticsearch/settings.sls" import elasticsearch with context %}
 
+## Install ElasticSearch pkg with desired version
 elasticsearch_pkg:
   pkg.installed:
     - name: {{ elasticsearch_map.pkg }}
@@ -12,3 +13,4 @@ elasticsearch_pkg:
     {% endif %}
     - require:
       - sls: elasticsearch.repo
+    - failhard: True

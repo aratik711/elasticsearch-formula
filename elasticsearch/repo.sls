@@ -1,16 +1,19 @@
 {% from "elasticsearch/settings.sls" import elasticsearch with context %}
 
+## Set ElasticSearch repo url
 {%- if elasticsearch.major_version == 5 %}
   {%- set repo_url = 'https://artifacts.elastic.co/packages/5.x' %}
 {%- else %}
   {%- set repo_url = 'http://packages.elastic.co/elasticsearch/2.x' %}
 {%- endif %}
 
+## Install https transport package in OS is Debian based
 {%- if elasticsearch.major_version == 5 and grains['os_family'] == 'Debian' %}
 apt-transport-https:
   pkg.installed
 {%- endif %}
 
+## Add ElasticSearch repository
 elasticsearch_repo:
   pkgrepo.managed:
     - humanname: Elasticsearch {{ elasticsearch.major_version }}

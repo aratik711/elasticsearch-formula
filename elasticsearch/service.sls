@@ -1,16 +1,16 @@
 include:
-  - elasticsearch.pkg
+  - elasticsearch.install
   - elasticsearch.config
 
+## Enable and auto restart elasticsearch service after file changes.
 elasticsearch_service:
   service.running:
     - name: elasticsearch
     - enable: True
-{%- if salt['pillar.get']('elasticsearch:config') %}
     - watch:
       - file: /etc/elasticsearch/elasticsearch.yml
       - file: /etc/elasticsearch/jvm.options
       - file: /usr/lib/systemd/system/elasticsearch.service
-{%- endif %}
     - require:
       - pkg: elasticsearch
+    - failhard: True

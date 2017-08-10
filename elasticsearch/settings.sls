@@ -7,6 +7,7 @@
 
 {% from "elasticsearch/map.jinja" import elasticsearch_map with context %}
 
+## Set the ElasticSearch major version
 {% set version = salt['pillar.get']('elasticsearch:version') %}
 {% if version %}
   {% set major_version = version[0] | int %}

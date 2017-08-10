@@ -1,12 +1,14 @@
 include:
   - elasticsearch.service
 
+## Set sysconfig file based on OS
 {% if grains.get('os_family') == 'Debian' %}
 {% set sysconfig_file = '/etc/default/elasticsearch' %}
 {% else %}
 {% set sysconfig_file = '/etc/sysconfig/elasticsearch' %}
 {% endif %}
 
+## Copy the sysconfig template to minion
 {{ sysconfig_file }}:
   file.managed:
     - source: salt://elasticsearch/files/sysconfig

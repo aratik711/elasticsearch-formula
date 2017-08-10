@@ -1,6 +1,7 @@
 include:
-  - elasticsearch.pkg
+  - elasticsearch.install
 
+## Get ElaticSearch config data from pillar
 {%- if salt['pillar.get']('elasticsearch:config') %}
 /etc/elasticsearch/elasticsearch.yml:
   file.managed:
@@ -8,14 +9,16 @@ include:
     - user: root
     - template: jinja
     - require:
-      - sls: elasticsearch.pkg
+      - sls: elasticsearch.install
     - context:
         config: {{ salt['pillar.get']('elasticsearch:config', '{}') }}
 {%- endif %}
 
+## Retrieve data_dir and log_dir from pillars
 {% set data_dir = salt['pillar.get']('elasticsearch:config:path.data') %}
 {% set log_dir = salt['pillar.get']('elasticsearch:config:path.logs') %}
 
+## Set permissions for data_dir and log_dir
 {% for dir in (data_dir, log_dir) %}
 {% if dir %}
 {{ dir }}:
